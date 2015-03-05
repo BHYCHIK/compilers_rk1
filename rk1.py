@@ -35,8 +35,8 @@ class Grid(object):
             self._right_node = Grid(right_side, test_case, self)
 
     def _common_find_x(self, query):
-        left_ok = self._e <= query._px
-        right_ok = self._e > query._px
+        left_ok = self._e >= query._px
+        right_ok = self._e <= query._px
         return (left_ok, right_ok)
 
     def _common_find_y(self, query):
@@ -58,6 +58,7 @@ class Grid(object):
             (left_ok, right_ok) = self._common_find_y(query)
         if self._d == 'cz':
             (left_ok, right_ok) = self._common_find_z(query)
+        print('left_ok=%s, right_ok=%s query=%s coord=%s value=%s'%(left_ok, right_ok, query, self._d, self._e))
         
         if not (left_ok or right_ok):
             return '*'
@@ -78,21 +79,21 @@ class Grid(object):
             else:
                 right_symbol = self._right_node._common_find(query)
         else:
-            left_symbol = '*'
+            right_symbol = '*'
 
         return '(%s,%s)' % (left_symbol, right_symbol)
 
 
     def find_subtree(self, query):
-        if query._px <= self._test_case._cxmin:
+        if query._px < self._test_case._cxmin:
             return '*'
         elif query._px > self._test_case._cxmax:
             return '*'
-        elif query._py <= self._test_case._cymin:
+        elif query._py < self._test_case._cymin:
             return '*'
         elif query._py > self._test_case._cymax:
             return '*'
-        elif query._pz <= self._test_case._czmin:
+        elif query._pz < self._test_case._czmin:
             return '*'
         elif query._pz > self._test_case._czmax:
             return '*'
