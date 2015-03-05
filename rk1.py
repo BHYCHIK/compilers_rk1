@@ -63,7 +63,27 @@ class Grid(object):
         self._left_node = Grid(left_side, test_case, self, True, left_side == '#')
         self._right_node = Grid(right_side, test_case, self, False, right_side == '#')
 
+    def _is_inner_point(self, query)
+
     def _is_point_belongs(self, query):
+        nearest_x = (self._xmin + self._xmax) / 2.0
+        nearest_y = (self._ymin + self._ymax) / 2.0
+        nearest_z = (self._zmin + self._zmax) / 2.0
+
+        if query._px >= self._xmax:
+            nearest_x = self._xmax
+        if query._py >= self._ymax:
+            nearest_y = self._ymax
+        if query._pz >= self._zmax:
+            nearest_z = self._zmax
+        
+        if query._px <= self._xmin:
+            nearest_x = self._xmin
+        if query._py <= self._ymin:
+            nearest_y = self._ymin
+        if query._pz <= self._zmin:
+            nearest_z = self._zmin
+        
         return True
 
     def find_subtree(self, query):
