@@ -16,6 +16,7 @@ class Grid(object):
     def __init__(self, grid_description, test_case, parent=None, is_left=None, is_leaf=False):
         self._parent = parent
         self._test_case = test_case
+        self._is_leaf = is_leaf
 
         if parent is None:
             self._xmin = test_case._cxmin
@@ -62,72 +63,17 @@ class Grid(object):
         self._left_node = Grid(left_side, test_case, self, True, left_side == '#')
         self._right_node = Grid(right_side, test_case, self, False, right_side == '#')
 
-    def _common_find_x(self, query):
-        left_ok = self._e + query._r > query._px
-        right_ok = self._e + query._r <= query._px
-        return (left_ok, right_ok)
-
-    def _common_find_y(self, query):
-        left_ok = self._e <= query._py
-        right_ok = self._e > query._py
-        return (left_ok, right_ok)
-
-    def _common_find_z(self, query):
-        left_ok = self._e <= query._pz
-        right_ok = self._e > query._pz
-        return (left_ok, right_ok)
-
-    def _common_find(self, query):
-        left_ok = False
-        right_ok = False
-        if self._d == 'cx':
-            (left_ok, right_ok) = self._common_find_x(query)
-        if self._d == 'cy':
-            (left_ok, right_ok) = self._common_find_y(query)
-        if self._d == 'cz':
-            (left_ok, right_ok) = self._common_find_z(query)
-        print('left_ok=%s, right_ok=%s query=%s coord=%s value=%s'%(left_ok, right_ok, query, self._d, self._e))
-        
-        if not (left_ok or right_ok):
-            return '*'
-
-        left_symbol = None
-        if left_ok:
-            if self._left_node is None:
-                left_symbol = '#'
-            else:
-                left_symbol = self._left_node._common_find(query)
-        else:
-            left_symbol = '*'
-        
-        right_symbol = None
-        if right_ok:
-            if self._right_node is None:
-                right_symbol = '#'
-            else:
-                right_symbol = self._right_node._common_find(query)
-        else:
-            right_symbol = '*'
-
-        return '(%s,%s)' % (left_symbol, right_symbol)
-
+    def _is_point_belongs(self, query):
+        return True
 
     def find_subtree(self, query):
-        if query._px < self._test_case._cxmin:
-            return '*'
-        elif query._px > self._test_case._cxmax:
-            return '*'
-        elif query._py < self._test_case._cymin:
-            return '*'
-        elif query._py > self._test_case._cymax:
-            return '*'
-        elif query._pz < self._test_case._czmin:
-            return '*'
-        elif query._pz > self._test_case._czmax:
+        if not self._is_point_belongs(query):
             return '*'
         else:
-            return self._common_find(query)
-
+            if self._is_leaf:
+                return '#'
+            else:
+                return '(%s,%s)' % (self._left_node.find_subtree(query), self._right_node.find_subtree(query))
     
     def __str__(self):
         return "{%s/%s(%s,%s)}" % (self._d, self._e, '#' if self._left_node is None else self._left_node, '#' if self._right_node is None else self._right_node)
