@@ -13,30 +13,58 @@ class Grid(object):
             if (grid_description[i] == ',') and (counter == 0):
                 return i
 
-    def __init__(self, grid_description, test_case, parent=None):
+    def __init__(self, grid_description, test_case, parent=None, is_left=None, is_leaf=False):
         self._parent = parent
         self._test_case = test_case
+
+        if parent is None:
+            self._xmin = test_case._cxmin
+            self._xmax = test_case._cxmax
+            self._ymin = test_case._cymin
+            self._ymax = test_case._cymax
+            self._zmin = test_case._czmin
+            self._zmax = test_case._czmax
+            self._rmin = test_case._rmin
+            self._rmax = test_case._rmax
+        elif is_left:
+            if parent._d == 'cx':
+                self._xmax = parent._e
+            elif parent._d == 'cy':
+                self._ymax = parent._e
+            elif parent._d == 'cz':
+                self._zmax = parent._e
+            elif parent._d == 'r':
+                self._rmax = parent._e
+        else:
+            if parent._d == 'cx':
+                self._xmin = parent._e
+            elif parent._d == 'cy':
+                self._ymin = parent._e
+            elif parent._d == 'cz':
+                self._zmin = parent._e
+            elif parent._d == 'r':
+                self._rmin = parent._e
+
+        if is_leaf:
+            return
+        
         slash = grid_description.find('/')
         self._d = grid_description[:slash]
         grid_description = grid_description[slash+1:-1]
         brace = grid_description.find('(')
         self._e = float(grid_description[:brace])
+
         grid_description = grid_description[brace+1:]
         sep_comma = Grid._find_sep_comma(grid_description)
         left_side = grid_description[:sep_comma]
         right_side = grid_description[sep_comma+1:]
-        if left_side == '#':
-            self._left_node = None
-        else:
-            self._left_node = Grid(left_side, test_case, self)
-        if right_side == '#':
-            self._right_node = None
-        else:
-            self._right_node = Grid(right_side, test_case, self)
+        
+        self._left_node = Grid(left_side, test_case, self, True, left_side == '#')
+        self._right_node = Grid(right_side, test_case, self, False, right_side == '#')
 
     def _common_find_x(self, query):
-        left_ok = self._e >= query._px
-        right_ok = self._e <= query._px
+        left_ok = self._e + query._r > query._px
+        right_ok = self._e + query._r <= query._px
         return (left_ok, right_ok)
 
     def _common_find_y(self, query):
