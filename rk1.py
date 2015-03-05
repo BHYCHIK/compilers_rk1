@@ -1,5 +1,7 @@
 import math
 
+a = 0
+
 class InputOverException(Exception):
     pass
 
@@ -16,9 +18,12 @@ class Grid(object):
                 return i
 
     def __init__(self, grid_description, test_case, parent=None, is_left=None, is_leaf=False):
+        global a
         self._parent = parent
         self._test_case = test_case
         self._is_leaf = is_leaf
+        self.number = a
+        a = a + 1
 
         if parent is None:
             self._xmin = test_case._cxmin
@@ -92,12 +97,20 @@ class Grid(object):
             nearest_y = self._ymin
         if query._pz < self._zmin:
             nearest_z = self._zmin
-        
+
+        #print("POINT %s;%s;%s;%s" % (query._px, query._py, query._pz, query._r))
         if (middle_x == nearest_x) and (middle_y == nearest_y) and (middle_z == nearest_z):
             return True # Point is in region
+
+        if nearest_x == middle_x:
+            nearest_x = query._px
+        if nearest_y == middle_y:
+            nearest_y = query._py
+        if nearest_z == middle_z:
+            nearest_z = query._pz
         
+        #print("NEAREST %s %s %s" %(nearest_x, nearest_y, nearest_z))
         distance = math.sqrt((nearest_x - query._px) ** 2 + (nearest_y - query._py) ** 2 + (nearest_z - query._pz) ** 2)
-        print(distance)
         return distance <= query._r + self._rmax
 
     def find_subtree(self, query):
