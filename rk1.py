@@ -56,6 +56,17 @@ class Query(object):
 
 
 class TestCase(object):
+    def _setup_constraining(self, line):
+        parts = line.split(' ')
+        self._cxmin = float(parts[0])
+        self._cxmax = float(parts[1])
+        self._cymin = float(parts[2])
+        self._cymax = float(parts[3])
+        self._czmix = float(parts[4])
+        self._czmax = float(parts[5])
+        self._rmin = float(parts[6])
+        self._rmax = float(parts[7])
+
     def __init__(self, file_obj):
         text = []
         while 1:
@@ -69,6 +80,7 @@ class TestCase(object):
         self._name = text[0]
         text = text[1:]
         region = text[0]
+        self._setup_constraining(region)
         text = text[1:]
         grid_description = []
         for line in text:
@@ -78,11 +90,7 @@ class TestCase(object):
         text = text[len(grid_description):]
         grid_description = ''.join(grid_description)
         self._grid = Grid(grid_description, self)
-        
         self._queries = [Query(i) for i in text]
-        for i in self._queries:
-            print(i)
-
 
 file_obj = open('input.txt', 'r')
 test_cases = []
