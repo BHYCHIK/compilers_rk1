@@ -96,7 +96,8 @@ class Grid(object):
         if (middle_x == nearest_x) and (middle_y == nearest_y) and (middle_z == nearest_z):
             return True # Point is in region
         
-        distance = math.sqrt((nearest_x - query._px) ** 2 + (nearest_z - query._pz) ** 2 + (nearest_z - query._pz) ** 2)
+        distance = math.sqrt((nearest_x - query._px) ** 2 + (nearest_y - query._py) ** 2 + (nearest_z - query._pz) ** 2)
+        print(distance)
         return distance <= query._r + self._rmax
 
     def find_subtree(self, query):
