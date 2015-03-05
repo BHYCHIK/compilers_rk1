@@ -1,3 +1,5 @@
+import math
+
 class InputOverException(Exception):
     pass
 
@@ -73,9 +75,9 @@ class Grid(object):
         self._right_node = Grid(right_side, test_case, self, False, right_side == '#')
 
     def _is_point_belongs(self, query):
-        nearest_x = (self._xmin + self._xmax) / 2.0
-        nearest_y = (self._ymin + self._ymax) / 2.0
-        nearest_z = (self._zmin + self._zmax) / 2.0
+        middle_x = nearest_x = (self._xmin + self._xmax) / 2.0
+        middle_y = nearest_y = (self._ymin + self._ymax) / 2.0
+        middle_z = nearest_z = (self._zmin + self._zmax) / 2.0
 
         if query._px >= self._xmax:
             nearest_x = self._xmax
@@ -84,14 +86,18 @@ class Grid(object):
         if query._pz >= self._zmax:
             nearest_z = self._zmax
         
-        if query._px <= self._xmin:
+        if query._px < self._xmin:
             nearest_x = self._xmin
-        if query._py <= self._ymin:
+        if query._py < self._ymin:
             nearest_y = self._ymin
-        if query._pz <= self._zmin:
+        if query._pz < self._zmin:
             nearest_z = self._zmin
         
-        return True
+        if (middle_x == nearest_x) and (middle_y == nearest_y) and (middle_z == nearest_z):
+            return True # Point is in region
+        
+        distance = math.sqrt((nearest_x - query._px) ** 2 + (nearest_z - query._pz) ** 2 + (nearest_z - query._pz) ** 2)
+        return distance <= query._r + self._rmax
 
     def find_subtree(self, query):
         if not self._is_point_belongs(query):
@@ -164,7 +170,6 @@ class TestCase(object):
     def execute(self):
         print(self._name)
         for query in self._queries:
-            print(query)
             print(self._grid.find_subtree(query))
 
 
