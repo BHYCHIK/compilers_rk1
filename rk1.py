@@ -1,7 +1,5 @@
 import math
 
-a = 0
-
 class InputOverException(Exception):
     pass
 
@@ -18,12 +16,9 @@ class Grid(object):
                 return i
 
     def __init__(self, grid_description, test_case, parent=None, is_left=None, is_leaf=False):
-        global a
         self._parent = parent
         self._test_case = test_case
         self._is_leaf = is_leaf
-        self.number = a
-        a = a + 1
 
         if parent is None:
             self._xmin = test_case._cxmin
@@ -121,12 +116,6 @@ class Grid(object):
                 return '#'
             else:
                 return '(%s,%s)' % (self._left_node.find_subtree(query), self._right_node.find_subtree(query))
-    
-    def __str__(self):
-        return "{%s/%s(%s,%s)}" % (self._d, self._e, '#' if self._left_node is None else self._left_node, '#' if self._right_node is None else self._right_node)
-
-    def __repr__(self):
-        return self.__str__()
 
 class Query(object):
     def __init__(self, query):
@@ -135,14 +124,6 @@ class Query(object):
         self._py = float(query[1])
         self._pz = float(query[2])
         self._r = float(query[3])
-
-    def __str__(self):
-        return 'query:(%s %s %s %s)' % (self._px, self._py, self._pz, self._r)
-
-
-    def __repr__(self):
-        return self.__str__()
-
 
 class TestCase(object):
     def _setup_constraining(self, line):
