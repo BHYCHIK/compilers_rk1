@@ -27,24 +27,33 @@ class Grid(object):
             self._zmax = test_case._czmax
             self._rmin = test_case._rmin
             self._rmax = test_case._rmax
-        elif is_left:
-            if parent._d == 'cx':
-                self._xmax = parent._e
-            elif parent._d == 'cy':
-                self._ymax = parent._e
-            elif parent._d == 'cz':
-                self._zmax = parent._e
-            elif parent._d == 'r':
-                self._rmax = parent._e
         else:
-            if parent._d == 'cx':
-                self._xmin = parent._e
-            elif parent._d == 'cy':
-                self._ymin = parent._e
-            elif parent._d == 'cz':
-                self._zmin = parent._e
-            elif parent._d == 'r':
-                self._rmin = parent._e
+            self._xmin = parent._xmin
+            self._xmax = parent._xmax
+            self._ymin = parent._ymin
+            self._ymax = parent._ymax
+            self._zmin = parent._zmin
+            self._zmax = parent._zmax
+            self._rmin = parent._rmin
+            self._rmax = parent._rmax
+            if is_left:
+                if parent._d == 'cx':
+                    self._xmax = parent._e
+                elif parent._d == 'cy':
+                    self._ymax = parent._e
+                elif parent._d == 'cz':
+                    self._zmax = parent._e
+                elif parent._d == 'r':
+                    self._rmax = parent._e
+            else:
+                if parent._d == 'cx':
+                    self._xmin = parent._e
+                elif parent._d == 'cy':
+                    self._ymin = parent._e
+                elif parent._d == 'cz':
+                    self._zmin = parent._e
+                elif parent._d == 'r':
+                    self._rmin = parent._e
 
         if is_leaf:
             return
@@ -62,8 +71,6 @@ class Grid(object):
         
         self._left_node = Grid(left_side, test_case, self, True, left_side == '#')
         self._right_node = Grid(right_side, test_case, self, False, right_side == '#')
-
-    def _is_inner_point(self, query)
 
     def _is_point_belongs(self, query):
         nearest_x = (self._xmin + self._xmax) / 2.0
